@@ -1,26 +1,33 @@
-import { IconBadge } from "@/components/icon-badge"
-import { db } from "@/lib/db"
-import { auth } from "@clerk/nextjs"
-import { LayoutDashboard } from "lucide-react"
-import { redirect } from "next/navigation"
-import { TitleForm } from "./_components/title-form"
-import { DescriptionForm } from "./_components/description-form"
-import { ImageForm } from "./_components/image-form"
+import { IconBadge } from "@/components/icon-badge";
+import { db } from "@/lib/db";
+import { auth } from "@clerk/nextjs";
+import { LayoutDashboard } from "lucide-react";
+import { redirect } from "next/navigation";
+import { TitleForm } from "./_components/title-form";
+import { DescriptionForm } from "./_components/description-form";
+import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form";
 
-const CourseIdPage = async ({params}: {params: {courseId: string}}) => {
-  const userId = auth()
+const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
+  const userId = auth();
 
-  if(!userId) {
-    return redirect("/")
+  if (!userId) {
+    return redirect("/");
   }
 
   const course = await db.course.findUnique({
     where: {
-        id: params.courseId,
-    }
-  })
+      id: params.courseId,
+    },
+  });
 
-  if(!course) {
+  const categories = await db.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  if (!course) {
     return redirect("/");
   }
 
@@ -29,13 +36,13 @@ const CourseIdPage = async ({params}: {params: {courseId: string}}) => {
     course.description,
     course.imageUrl,
     course.price,
-    course.categoryId
-  ]
+    course.categoryId,
+  ];
 
-  const totalFields = requiredFields.length
-  const completedFileds = requiredFields.filter(Boolean).length
+  const totalFields = requiredFields.length;
+  const completedFileds = requiredFields.filter(Boolean).length;
 
-  const completionText = `(${completedFileds}/${totalFields})`
+  const completionText = `(${completedFileds}/${totalFields})`;
 
   return (
     <div className="p-6">
@@ -57,10 +64,18 @@ const CourseIdPage = async ({params}: {params: {courseId: string}}) => {
           <TitleForm initialData={course} courseId={course.id} />
           <DescriptionForm initialData={course} courseId={course.id} />
           <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
+            initialData={course}
+            courseId={course.id}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
+          />
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default CourseIdPage
+export default CourseIdPage;
