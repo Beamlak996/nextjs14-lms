@@ -22,12 +22,12 @@ import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/format";
 
 type PriceFormProps = {
-  initialData: Course
+  initialData: Course;
   courseId: string;
 };
 
 const formSchema = z.object({
-  price: z.coerce.number()
+  price: z.coerce.number(),
 });
 
 export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
@@ -38,7 +38,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      price: initialData?.price || undefined
+      price: initialData?.price || undefined,
     },
   });
 
@@ -50,10 +50,11 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success(`Course updated`);
-      toggleEdit();
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      toggleEdit();
     }
   };
 

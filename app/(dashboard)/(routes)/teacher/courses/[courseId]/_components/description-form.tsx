@@ -51,10 +51,11 @@ export const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps)
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success(`Course updated`);
-      toggleEdit();
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      toggleEdit();
     }
   };
 

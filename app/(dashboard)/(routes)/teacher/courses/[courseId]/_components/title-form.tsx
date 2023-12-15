@@ -6,7 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -28,7 +34,7 @@ const formSchema = z.object({
 export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,12 +47,13 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-        await axios.patch(`/api/courses/${courseId}`, values)
-        toast.success(`Course updated`)
-        toggleEdit()
-        router.refresh()
+      await axios.patch(`/api/courses/${courseId}`, values);
+      toast.success(`Course updated`);
+      router.refresh();
     } catch (error) {
-        toast.error("Something went wrong")
+      toast.error("Something went wrong");
+    } finally {
+      toggleEdit();
     }
   };
 
@@ -89,12 +96,8 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
                 </FormItem>
               )}
             />
-            <div className="flex items-center gap-x-2" >  
-                <Button
-                  disabled={!isValid || isSubmitting}
-                >
-                    Save
-                </Button>
+            <div className="flex items-center gap-x-2">
+              <Button disabled={!isValid || isSubmitting}>Save</Button>
             </div>
           </form>
         </Form>

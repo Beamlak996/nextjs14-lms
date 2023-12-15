@@ -22,16 +22,20 @@ import { Course } from "@prisma/client";
 import { Combobox } from "@/components/ui/combobox";
 
 type CategoryFormProps = {
-  initialData: Course
+  initialData: Course;
   courseId: string;
-  options: { label: string, value: string }[]
+  options: { label: string; value: string }[];
 };
 
 const formSchema = z.object({
-  categoryId: z.string().min(1)
+  categoryId: z.string().min(1),
 });
 
-export const CategoryForm = ({ initialData, courseId, options }: CategoryFormProps) => {
+export const CategoryForm = ({
+  initialData,
+  courseId,
+  options,
+}: CategoryFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const router = useRouter();
@@ -39,7 +43,7 @@ export const CategoryForm = ({ initialData, courseId, options }: CategoryFormPro
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData.categoryId || ""
+      categoryId: initialData.categoryId || "",
     },
   });
 
@@ -51,14 +55,17 @@ export const CategoryForm = ({ initialData, courseId, options }: CategoryFormPro
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success(`Course updated`);
-      toggleEdit();
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
+    } finally {
+      toggleEdit();
     }
   };
 
-  const selectedOption = options.find((option) => option.value === initialData.categoryId) 
+  const selectedOption = options.find(
+    (option) => option.value === initialData.categoryId
+  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -76,8 +83,13 @@ export const CategoryForm = ({ initialData, courseId, options }: CategoryFormPro
         </Button>
       </div>
       {!isEditing ? (
-        <p className={cn("text-sm mt-2", !initialData.categoryId && "text-slate-500 italic")}>
-            {selectedOption?.label || "No category"}
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.categoryId && "text-slate-500 italic"
+          )}
+        >
+          {selectedOption?.label || "No category"}
         </p>
       ) : (
         <Form {...form}>
@@ -91,10 +103,7 @@ export const CategoryForm = ({ initialData, courseId, options }: CategoryFormPro
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox  
-                      options={...options}
-                      {...field}
-                    />
+                    <Combobox options={...options} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
