@@ -44,11 +44,11 @@ export const getChapter = async ({
     }
 
     let muxData = null
-    let attachmets: Attachment[] =[]
+    let attachments: Attachment[] =[]
     let nextChapter: Chapter | null = null
 
     if(purchase) {
-        attachmets = await db.attachment.findMany({
+        attachments = await db.attachment.findMany({
             where: {
                 courseId: courseId
             }
@@ -88,7 +88,7 @@ export const getChapter = async ({
         chapter,
         course,
         muxData,
-        attachmets,
+        attachments,
         nextChapter,
         userProgress,
         purchase
