@@ -1,9 +1,9 @@
-import { getProgress } from "@/actions/get-progress";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { CourseSidebar } from "./_components/course-sidebar";
 import { CourseNavbar } from "./_components/course-navbar";
+import { getProgress } from "@/actions/get-progress";
 
 
 const CourseIdLayout = async ({
